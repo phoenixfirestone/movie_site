@@ -23,22 +23,30 @@ const App = () => {
   const [candleList, setCandleList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const copper_url = `https://www.alphavantage.co/query?function=COPPER&interval=monthly&apikey=${API_KEY}`;
+  const aluminium_url = `https://www.alphavantage.co/query?function=ALUMINUM&interval=monthly&apikey=${API_KEY}`
 
-  const get_copper_daily = async () => {
+  const get_copper_daily = async ( query = "" ) => {
     setIsLoading(false);
     setErrorMessage("");
+    setCandleList([]);
         try {
-         const response = await fetch(copper_url,API_OPTIONS);
+          const endpoint = query ? aluminium_url : copper_url;
+         const response = await fetch(endpoint,API_OPTIONS);
          if (response.ok){
          const data = await response.json();
               if (data.response === 'False'){
                   setErrorMessage(data.Error || "failed to fetch data");
                   setCandleList([]);
-              } else {
+              } else if(data.data) {
                 console.log(data.name);
                 alert(data.name);
                 setCandleList(data.data);
-              }  
+              } else {
+                setErrorMessage(`unexpected API Response format ${data.Information}`);
+                console.log("sdqf");
+                console.log(data);
+                setCandleList([]);
+              }
          } else {
           throw new Error("The response was not ok");
          }
@@ -51,8 +59,8 @@ const App = () => {
   }
 
   useEffect(() => {
-    get_copper_daily();
-  },[])
+    get_copper_daily(searchTerm);
+  },[searchTerm])
 
   return (
     <main>

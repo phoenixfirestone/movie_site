@@ -1,9 +1,9 @@
 import React from 'react'
 
-const CandleStick = ({candle}) => {
+const CandleStick = ({candle : {date , value}}) => {
   return (
-    <div>
-    <p key={candle.date} className='text-white'>{candle.value}</p>
+    <div className="movie-card">
+    <p className='text-white'>{value}</p>
     </div>
   )
 }
